@@ -5,6 +5,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import logging
 import joblib
 import pandas as pd
+from pathlib import Path
 
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
@@ -17,8 +18,10 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
-DATA_PATH = "data/german_credit_data_preprocessed.csv"
-MODEL_PATH = "Loan-Default-Mlops/model/credit_risk_pipeline.joblib"
+ROOT_DIR = Path(__file__).resolve().parent.parent
+
+DATA_PATH = ROOT_DIR / "data" / "german_credit_data_preprocessed.csv"
+MODEL_PATH = ROOT_DIR / "model" / "credit_risk_pipeline.joblib"
 
 def main():
     logging.info("Loading dataset")

@@ -10,45 +10,25 @@ from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import OneHotEncoder
 
-# load the data
-df = load_data()
-
-# path
-data_path = 'Loan-Default-Mlops/data'
-
-# save the data to csv
-save_data(df, os.path.join(data_path, 'german_credit_data.csv'))
-
-# rename columns
-df.columns = ['checkingAccount','duration','creditHistory', 'purpose', 'creditAmount','savingsAcc','employmentTime', 'installmentPercIncome', 
-              'status', 'otherFin', 'timeResidence', 'property' ,'age', 'otherInstallPlans' ,'housing' ,'numCredits', 'job', 'numOfMant', 'phone', 'foreignWorker', 'target']
-
-print(df.head())
-
-# cek missing values
-print(df.isnull().sum())
-
-# cek data types
-num_cols = df.select_dtypes(include=['int64', 'float64']).columns
-cat_cols = df.select_dtypes(include=['object']).columns
-
-print("Numerical columns:", num_cols)
-print("Categorical columns:", cat_cols)
-
-# save the preprocessed data to csv
-df.to_csv(os.path.join(data_path, 'german_credit_data_preprocessed.csv'), index=False)
-
-# function to build preprocessing pipeline
+# function untuk membuat preprocessor
 def get_preprocessor(df):
     X = df.drop(columns=["target"])
 
-    categorical_features = X.select_dtypes(
-        include=["object"]
-    ).columns.tolist()
+    categorical_features = (
+        X.select_dtypes(
+            include=["object"]
+        )
+        .columns
+        .tolist()
+    )
 
-    numerical_features = X.select_dtypes(
-        exclude=["object"]
-    ).columns.tolist()
+    numerical_features = (
+        X.select_dtypes(
+            exclude=["object"]
+        )
+        .columns
+        .tolist()
+    )
 
     numeric_transformer = Pipeline(
         steps=[
@@ -63,7 +43,9 @@ def get_preprocessor(df):
         steps=[
             (
                 "imputer",
-                SimpleImputer(strategy="most_frequent")
+                SimpleImputer(
+                    strategy="most_frequent"
+                )
             ),
             (
                 "encoder",
@@ -90,3 +72,72 @@ def get_preprocessor(df):
     )
 
     return preprocessor
+
+# main function untuk preprocessing data
+def main():
+    df = load_data()
+
+    data_path = "data"
+
+    os.makedirs(
+        data_path,
+        exist_ok=True
+    )
+
+    save_data(
+        df,
+        os.path.join(
+            data_path,
+            "german_credit_data.csv"
+        )
+    )
+
+    df.columns = [
+        "checkingAccount",
+        "duration",
+        "creditHistory",
+        "purpose",
+        "creditAmount",
+        "savingsAcc",
+        "employmentTime",
+        "installmentPercIncome",
+        "status",
+        "otherFin",
+        "timeResidence",
+        "property",
+        "age",
+        "otherInstallPlans",
+        "housing",
+        "numCredits",
+        "job",
+        "numOfMant",
+        "phone",
+        "foreignWorker",
+        "target"
+    ]
+
+    print(df.head())
+
+    print(df.isnull().sum())
+
+    num_cols = df.select_dtypes(
+        include=["int64", "float64"]
+    ).columns
+
+    cat_cols = df.select_dtypes(
+        include=["object"]
+    ).columns
+
+    print("Numerical columns:", num_cols)
+    print("Categorical columns:", cat_cols)
+
+    df.to_csv(
+        os.path.join(
+            data_path,
+            "german_credit_data_preprocessed.csv"
+        ),
+        index=False
+    )
+
+if __name__ == "__main__":
+    main()
