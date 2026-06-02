@@ -40,7 +40,7 @@ def health_check():
     }
 
 # endpoint untuk prediksi single data
-@app.post("/predict")
+@app.post("/predicttt")
 def predict(data: CreditRequest):
     result = predict_single(data.model_dump())
     return result
